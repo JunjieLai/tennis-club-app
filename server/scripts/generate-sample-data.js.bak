@@ -1,0 +1,343 @@
+const { sequelize } = require('../config/database');
+const { Member, Challenge, Match } = require('../models');
+
+// Sample data arrays
+const firstNames = ['John', 'Jane', 'Michael', 'Emily', 'David', 'Sarah', 'James', 'Emma', 'Robert', 'Olivia',
+                    'William', 'Ava', 'Richard', 'Sophia', 'Thomas', 'Isabella', 'Charles', 'Mia', 'Daniel', 'Charlotte'];
+const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
+                   'Hernandez', 'Lopez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee'];
+
+// Generate random date within range
+function randomDate(start, end) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+// Generate random integer between min and max (inclusive)
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Generate random float between min and max
+function randomFloat(min, max, decimals = 1) {
+  return parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
+}
+
+async function generateSampleData() {
+  try {
+    console.log('🗑️  Clearing existing data...');
+
+    // Clear existing data in correct order (respecting foreign keys)
+    await Match.destroy({ where: {}, truncate: false });
+    await Challenge.destroy({ where: {}, truncate: false });
+    await Member.destroy({ where: {}, truncate: false });
+
+    console.log('👤 Creating admin account...');
+
+    // Create admin account (password will be hashed by beforeCreate hook)
+    const admin = await Member.create({
+      FirstName: 'Admin',
+      LastName: 'User',
+      UserName: 'admin',
+      Signature: 'Tennis Club Administrator',
+      Email: 'admin@tennisclub.com',
+      MPassword: 'admin123',
+      Phone: '+1-555-0000',
+      Age: 35,
+      Gender: 'Male',
+      UTR: 10.0,
+      MPID: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin',
+      isAdmin: true
+    });
+
+    console.log('✅ Admin created:', {
+      email: 'admin@tennisclub.com',
+      password: 'admin123',
+      username: 'admin'
+    });
+
+    console.log('👥 Creating regular users...');
+
+    // Create 30 regular users
+    const users = [];
+    for (let i = 0; i < 30; i++) {
+      const firstName = firstNames[randomInt(0, firstNames.length - 1)];
+      const lastName = lastNames[randomInt(0, lastNames.length - 1)];
+      const userName = (firstName.substring(0, 5) + lastName.substring(0, 5)).toLowerCase() + (i + 1);
+      const gender = Math.random() > 0.5 ? 'Male' : 'Female';
+      const age = randomInt(15, 65);
+      const utr = randomFloat(2.0, 12.0, 1);
+
+      // Password will be hashed by beforeCreate hook
+      const user = await Member.create({
+        FirstName: firstName,
+        LastName: lastName,
+        UserName: userName,
+        Signature: `${firstName} ${lastName} - Tennis enthusiast`,
+        Email: `${userName}@email.com`,
+        MPassword: 'password123',
+        Phone: `+1-555-${String(1000 + i).padStart(4, '0')}`,
+        Age: age,
+        Gender: gender,
+        UTR: utr,
+        MPID: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userName}`,
+        isAdmin: false
+      });
+
+      users.push(user);
+
+      if ((i + 1) % 10 === 0) {
+        console.log(`   Created ${i + 1}/30 users...`);
+      }
+    }
+
+    console.log('✅ Created 30 users (all with password: password123)');
+
+    console.log('🤝 Creating challenges...');
+
+    // Create various challenges
+    const challenges = [];
+    const now = new Date();
+
+    // Wait status challenges (10)
+    for (let i = 0; i < 10; i++) {
+      const challenger = users[randomInt(0, users.length - 1)];
+      let challenged = users[randomInt(0, users.length - 1)];
+      while (challenged.MEID === challenger.MEID) {
+        challenged = users[randomInt(0, users.length - 1)];
+      }
+
+      const matchDateTime = randomDate(new Date(now.getTime() + 86400000), new Date(now.getTime() + 7 * 86400000)); // 1-7 days from now
+
+      const challenge = await Challenge.create({
+        ChallengerMEID: challenger.MEID,
+        ChallengedMEID: challenged.MEID,
+        State: 'Wait',
+        DateOfChallenge: randomDate(new Date(now.getTime() - 2 * 86400000), now),
+        MatchDateTime: matchDateTime,
+        Notes: 'Looking forward to a great match!'
+      });
+
+      challenges.push(challenge);
+    }
+
+    // Accept status challenges (15) - these will create pending matches
+    for (let i = 0; i < 15; i++) {
+      const challenger = users[randomInt(0, users.length - 1)];
+      let challenged = users[randomInt(0, users.length - 1)];
+      while (challenged.MEID === challenger.MEID) {
+        challenged = users[randomInt(0, users.length - 1)];
+      }
+
+      const matchDateTime = randomDate(new Date(now.getTime() + 86400000), new Date(now.getTime() + 14 * 86400000)); // 1-14 days from now
+
+      const challenge = await Challenge.create({
+        ChallengerMEID: challenger.MEID,
+        ChallengedMEID: challenged.MEID,
+        State: 'Accept',
+        DateOfChallenge: randomDate(new Date(now.getTime() - 5 * 86400000), new Date(now.getTime() - 86400000)),
+        MatchDateTime: matchDateTime,
+        Notes: 'Challenge accepted!'
+      });
+
+      challenges.push(challenge);
+    }
+
+    // Reject status challenges (5)
+    for (let i = 0; i < 5; i++) {
+      const challenger = users[randomInt(0, users.length - 1)];
+      let challenged = users[randomInt(0, users.length - 1)];
+      while (challenged.MEID === challenger.MEID) {
+        challenged = users[randomInt(0, users.length - 1)];
+      }
+
+      const challenge = await Challenge.create({
+        ChallengerMEID: challenger.MEID,
+        ChallengedMEID: challenged.MEID,
+        State: 'Reject',
+        DateOfChallenge: randomDate(new Date(now.getTime() - 7 * 86400000), new Date(now.getTime() - 2 * 86400000)),
+        MatchDateTime: randomDate(now, new Date(now.getTime() + 7 * 86400000)),
+        Notes: 'Sorry, not available'
+      });
+
+      challenges.push(challenge);
+    }
+
+    console.log(`✅ Created ${challenges.length} challenges (10 Wait, 15 Accept, 5 Reject)`);
+
+    console.log('🎾 Creating matches...');
+
+    const matches = [];
+
+    // Create pending matches for accepted challenges
+    const acceptedChallenges = challenges.filter(c => c.State === 'Accept');
+    for (const challenge of acceptedChallenges) {
+      const match = await Match.create({
+        CID: challenge.CID,
+        DateOfMatch: challenge.MatchDateTime,
+        Status: 'pending',
+        Player1MEID: challenge.ChallengerMEID,
+        Player2MEID: challenge.ChallengedMEID,
+        MEID1Set1Score: null,
+        MEID2Set1Score: null,
+        WinnerMEID: null,
+        LoserMEID: null
+      });
+
+      matches.push(match);
+    }
+
+    console.log(`✅ Created ${matches.length} pending matches`);
+
+    // Create finished matches (need grading) - 8 matches
+    console.log('🏁 Creating finished matches (awaiting grading)...');
+
+    for (let i = 0; i < 8; i++) {
+      const challenger = users[randomInt(0, users.length - 1)];
+      let challenged = users[randomInt(0, users.length - 1)];
+      while (challenged.MEID === challenger.MEID) {
+        challenged = users[randomInt(0, users.length - 1)];
+      }
+
+      const matchDate = randomDate(new Date(now.getTime() - 3 * 86400000), new Date(now.getTime() - 86400000)); // 1-3 days ago
+
+      const challenge = await Challenge.create({
+        ChallengerMEID: challenger.MEID,
+        ChallengedMEID: challenged.MEID,
+        State: 'Accept',
+        DateOfChallenge: randomDate(new Date(now.getTime() - 10 * 86400000), new Date(now.getTime() - 4 * 86400000)),
+        MatchDateTime: matchDate,
+        Notes: 'Match completed, awaiting score entry'
+      });
+
+      const match = await Match.create({
+        CID: challenge.CID,
+        DateOfMatch: matchDate,
+        Status: 'finished',
+        Player1MEID: challenger.MEID,
+        Player2MEID: challenged.MEID,
+        MEID1Set1Score: null,
+        MEID2Set1Score: null,
+        WinnerMEID: null,
+        LoserMEID: null
+      });
+
+      matches.push(match);
+    }
+
+    console.log('✅ Created 8 finished matches (awaiting grading)');
+
+    // Create graded matches (historical data) - 40 matches
+    console.log('📊 Creating graded matches (historical data)...');
+
+    for (let i = 0; i < 40; i++) {
+      const player1 = users[randomInt(0, users.length - 1)];
+      let player2 = users[randomInt(0, users.length - 1)];
+      while (player2.MEID === player1.MEID) {
+        player2 = users[randomInt(0, users.length - 1)];
+      }
+
+      const matchDate = randomDate(new Date(now.getTime() - 90 * 86400000), new Date(now.getTime() - 4 * 86400000)); // 4-90 days ago
+
+      const challenge = await Challenge.create({
+        ChallengerMEID: player1.MEID,
+        ChallengedMEID: player2.MEID,
+        State: 'Accept',
+        DateOfChallenge: new Date(matchDate.getTime() - 7 * 86400000), // Challenge created 7 days before match
+        MatchDateTime: matchDate,
+        Notes: 'Great match!'
+      });
+
+      // Generate realistic tennis scores
+      const set1P1 = randomInt(0, 7);
+      const set1P2 = randomInt(0, 7);
+      const set2P1 = randomInt(0, 7);
+      const set2P2 = randomInt(0, 7);
+
+      let set3P1 = null;
+      let set3P2 = null;
+
+      // Determine if we need a third set
+      const p1Sets = (set1P1 > set1P2 ? 1 : 0) + (set2P1 > set2P2 ? 1 : 0);
+      const p2Sets = (set1P1 < set1P2 ? 1 : 0) + (set2P1 < set2P2 ? 1 : 0);
+
+      if (p1Sets === 1 && p2Sets === 1) {
+        set3P1 = randomInt(0, 7);
+        set3P2 = randomInt(0, 7);
+      }
+
+      // Calculate winner
+      let winner, loser;
+      if (set3P1 !== null) {
+        const totalP1Sets = p1Sets + (set3P1 > set3P2 ? 1 : 0);
+        winner = totalP1Sets >= 2 ? player1.MEID : player2.MEID;
+        loser = totalP1Sets >= 2 ? player2.MEID : player1.MEID;
+      } else {
+        winner = p1Sets > p2Sets ? player1.MEID : player2.MEID;
+        loser = p1Sets > p2Sets ? player2.MEID : player1.MEID;
+      }
+
+      const match = await Match.create({
+        CID: challenge.CID,
+        DateOfMatch: matchDate,
+        Status: 'graded',
+        Player1MEID: player1.MEID,
+        Player2MEID: player2.MEID,
+        MEID1Set1Score: set1P1,
+        MEID2Set1Score: set1P2,
+        MEID1Set2Score: set2P1,
+        MEID2Set2Score: set2P2,
+        MEID1Set3Score: set3P1,
+        MEID2Set3Score: set3P2,
+        WinnerMEID: winner,
+        LoserMEID: loser
+      });
+
+      matches.push(match);
+
+      if ((i + 1) % 10 === 0) {
+        console.log(`   Created ${i + 1}/40 graded matches...`);
+      }
+    }
+
+    console.log('✅ Created 40 graded matches');
+
+    console.log('\n╔════════════════════════════════════════════════════════════════╗');
+    console.log('║  ✨ Sample Data Generation Complete!                          ║');
+    console.log('╚════════════════════════════════════════════════════════════════╝\n');
+
+    console.log('📊 Summary:');
+    console.log(`   👤 Users: 30 + 1 admin = 31 total`);
+    console.log(`   🤝 Challenges: ${challenges.length + 48} (10 Wait, ${15 + 48} Accept, 5 Reject)`);
+    console.log(`   🎾 Matches: ${matches.length} total`);
+    console.log(`      - Pending: 15`);
+    console.log(`      - Finished (awaiting grading): 8`);
+    console.log(`      - Graded (historical): 40`);
+
+    console.log('\n🔐 Login Credentials:');
+    console.log('   Admin:');
+    console.log('     Email: admin@tennisclub.com');
+    console.log('     Password: admin123');
+    console.log('\n   Regular Users:');
+    console.log('     Password for all users: password123');
+    console.log('     Example user emails: johnsmith123@email.com, janedoe456@email.com, etc.');
+
+    console.log('\n✅ You can now start the application and log in!');
+
+  } catch (error) {
+    console.error('❌ Error generating sample data:', error);
+    throw error;
+  } finally {
+    await sequelize.close();
+  }
+}
+
+// Run the script
+generateSampleData()
+  .then(() => {
+    console.log('\n✅ Done!');
+    process.exit(0);
+  })
+  .catch(err => {
+    console.error('\n❌ Failed:', err);
+    process.exit(1);
+  });

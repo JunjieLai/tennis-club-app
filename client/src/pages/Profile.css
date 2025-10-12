@@ -1,0 +1,12 @@
+.profile-page {
+  padding: 40px 20px;
+  max-width: 800px;
+}
+
+.profile-page h1 {
+  margin-bottom: 30px;
+}
+
+.profile-page .card {
+  max-width: 600px;
+}
