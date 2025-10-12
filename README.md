@@ -448,19 +448,3 @@ node server/scripts/generate-sample-data.js
 6. **Profile Edit**: Click avatar in Dashboard → modal → updates DB + AuthContext
 7. **Admin Analytics**: Two separate analysis tabs (Member Analysis, Activity Analysis) with Recharts visualizations
 8. **Activity Statistics**: Time-filtered queries (week/month/quarter) exclude future matches for accurate metrics
-
----
-
-## 📄 License
-
-MIT License
-
----
-
-## 👥 Credits
-
-**Project Type:** University Final Project  
-**Framework Transformation:** React + Node.js + Express  
-**Last Updated:** January 2025  
-**Version:** 1.0.0  
-**Status:** ✅ Production Ready
