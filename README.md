@@ -267,7 +267,7 @@ cd client && npm install && cd ..
 ```
 
 ### Step 2: Configure Environment
-Create `.env` in `tennis-club-app/`:
+`.env` in `tennis-club-app/`:
 ```env
 PORT=5001
 NODE_ENV=development
@@ -276,7 +276,7 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=tennisclub
 DB_USER=root
-DB_PASSWORD=201410329Lai@
+DB_PASSWORD=
 
 JWT_SECRET=your_super_secret_jwt_key_change_this_in_production_12345678
 JWT_EXPIRE=7d
