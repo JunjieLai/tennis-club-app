@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 async function setupDatabase() {
   let connection;
@@ -38,8 +39,8 @@ async function setupDatabase() {
     await connection.query(`
       CREATE TABLE member (
         MEID INT NOT NULL AUTO_INCREMENT,
-        UserName VARCHAR(10) NOT NULL,
-        Signature VARCHAR(50) DEFAULT NULL,
+        UserName VARCHAR(50) NOT NULL,
+        Signature VARCHAR(100) DEFAULT NULL,
         FirstName VARCHAR(50) NOT NULL,
         LastName VARCHAR(50) DEFAULT NULL,
         Email VARCHAR(50) NOT NULL UNIQUE,
