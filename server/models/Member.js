@@ -17,12 +17,12 @@ const Member = sequelize.define('Member', {
     allowNull: false
   },
   UserName: {
-    type: DataTypes.STRING(10),
+    type: DataTypes.STRING(50),
     allowNull: false,
     unique: true
   },
   Signature: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING(100),
     allowNull: true
   },
   Email: {
@@ -53,13 +53,13 @@ const Member = sequelize.define('Member', {
     type: DataTypes.FLOAT,
     allowNull: false
   },
-  DateofCreation: {
+  DateOfCreation: {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW
   },
   MPID: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING(255),
     allowNull: true
   },
   isAdmin: {
@@ -68,7 +68,7 @@ const Member = sequelize.define('Member', {
   }
 }, {
   tableName: 'member',
-  timestamps: false
+  timestamps: true
 });
 
 // Hash password before saving
