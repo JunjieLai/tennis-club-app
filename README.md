@@ -2,6 +2,36 @@
 
 A comprehensive full-stack web application for managing a tennis club, including player registration, match scheduling, challenge system, and performance analytics.
 
+## ⚡ Quick Start for Team Members
+
+**First time setup? Just run these 4 commands:**
+
+```bash
+# 1. Clone and enter the project
+cd tennis-club-app
+
+# 2. Install all dependencies
+npm install && cd client && npm install && cd ..
+
+# 3. Copy and configure environment file
+cp .env.example .env
+# Edit .env and set your MySQL password
+
+# 4. One-command database setup (creates DB, tables, and sample data)
+npm run init
+
+# 5. Start the application
+npm run dev
+```
+
+Open `http://localhost:3000` and login with:
+- Admin: `admin@tennisclub.com` / `admin123`
+- Test User: `testplayer1@email.com` / `password123`
+
+**That's it!** See [Installation & Setup](#installation--setup) for detailed instructions.
+
+---
+
 ## 📋 Table of Contents
 
 - [Project Overview](#project-overview)
@@ -257,62 +287,100 @@ Response: {
 ## 🚀 Installation & Setup
 
 ### Prerequisites
-- Node.js (v14+), npm (v6+), MySQL (v5.7+)
+- Node.js (v14+)
+- npm (v6+)
+- MySQL (v5.7+) - **Make sure MySQL is running!**
 
-### Step 1: Install Dependencies
+### Quick Start (Recommended)
+
+Follow these steps to get the application running:
+
+#### Step 1: Install Dependencies
 ```bash
 cd tennis-club-app
 npm install
 cd client && npm install && cd ..
 ```
 
-### Step 2: Configure Environment
-`.env` in `tennis-club-app/`:
+#### Step 2: Configure Environment
+Copy the example environment file and update it with your settings:
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and **change the following**:
 ```env
-PORT=5001
-NODE_ENV=development
-
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=tennisclub
-DB_USER=root
-DB_PASSWORD=
-
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production_12345678
-JWT_EXPIRE=7d
-
-CLIENT_URL=http://localhost:3000
+DB_PASSWORD=your_mysql_password_here
 ```
 
-**⚠️ IMPORTANT**: Change `DB_PASSWORD` to your own MySQL password!
+**⚠️ IMPORTANT**: Replace `your_mysql_password_here` with your actual MySQL root password!
 
-### Step 3: Create Database
+#### Step 3: One-Command Database Setup
+This will automatically create the database, tables, and populate sample data:
 ```bash
-mysql -u root -p
-CREATE DATABASE tennisclub;
-exit;
+npm run init
 ```
 
-### Step 4: Generate Sample Data
-```bash
-cd tennis-club-app
-node server/scripts/generate-sample-data.js
-```
+This single command will:
+- ✅ Drop and recreate the `tennisclub` database
+- ✅ Create all required tables (member, challenge, tmatch)
+- ✅ Generate sample data (32 users, ~250+ challenges, ~220+ matches)
 
-**Output:**
+**Expected Output:**
 ```
+🚀 Tennis Club Database - Complete Initialization
+📦 Step 1/2: Setting up database and tables...
+✅ Database created successfully
+✅ Member table created
+✅ Challenge table created
+✅ Match table created
+
+📦 Step 2/2: Generating sample data...
 ✅ Admin created: admin@tennisclub.com / admin123
 ✅ Created 30 users (password: password123)
 ✅ Created 2 test players (testplayer1@email.com, testplayer2@email.com)
 📊 Summary: 32 users, 253 challenges, 227 matches
+
+✨ Complete Initialization Finished!
 ```
 
-### Step 5: Start Application
+#### Step 4: Start Application
 ```bash
 npm run dev
 ```
 
 **Access:** `http://localhost:3000`
+
+---
+
+### Alternative: Manual Setup
+
+If you prefer to run each step separately:
+
+#### Setup Database Only
+```bash
+npm run setup-db
+```
+
+#### Generate Sample Data Only
+```bash
+npm run seed
+```
+
+---
+
+### Available NPM Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run init` | **One-command setup** - Creates database, tables, and sample data |
+| `npm run setup-db` | Creates database and tables only |
+| `npm run seed` | Generates sample data only (requires existing database) |
+| `npm run dev` | Starts both frontend and backend in development mode |
+| `npm run server` | Starts backend only (with nodemon) |
+| `npm run client` | Starts frontend only |
+| `npm run build` | Builds frontend for production |
+| `npm start` | Starts backend in production mode |
 
 ---
 
@@ -409,29 +477,74 @@ UTR Distribution: 10 low (2.0-4.9), 10 mid (5.0-8.9), 10 high (9.0-12.0)
 
 ## 🔧 Troubleshooting
 
-**Database Connection Error**
+### Common Issues
+
+**1. Database Connection Error**
 ```bash
-mysql.server status  # Check MySQL running
-# Verify .env credentials
+# Check if MySQL is running
+mysql.server status
+
+# Start MySQL if needed
+mysql.server start
+
+# Verify .env credentials are correct
+cat .env
+
+# Test MySQL connection manually
+mysql -u root -p
 ```
 
-**Port in Use**
+**2. "Cannot connect to database" Error**
+- Make sure MySQL is running
+- Verify `DB_PASSWORD` in `.env` matches your MySQL password
+- Check if MySQL port 3306 is correct (some installations use 3307)
+
+**3. Port Already in Use**
 ```bash
+# Kill processes using the ports
 lsof -ti:5001 | xargs kill -9
 lsof -ti:3000 | xargs kill -9
+
+# Then restart
 npm run dev
 ```
 
-**JWT Invalid**  
-Clear localStorage, re-login
+**4. JWT Invalid Error**
+- Clear browser localStorage
+- Log out and log in again
+- Check if `JWT_SECRET` is set in `.env`
 
-**Sample Data Fails**
+**5. Database Initialization Fails**
 ```bash
+# Reset everything and start fresh
+npm run init
+
+# Or manually:
 mysql -u root -p
-DROP DATABASE tennisclub;
-CREATE DATABASE tennisclub;
+DROP DATABASE IF EXISTS tennisclub;
 exit;
-node server/scripts/generate-sample-data.js
+npm run init
+```
+
+**6. Sample Data Generation Fails**
+```bash
+# Make sure database exists first
+npm run setup-db
+
+# Then generate data
+npm run seed
+```
+
+**7. "Table doesn't exist" Error**
+```bash
+# Recreate all tables
+npm run setup-db
+```
+
+**8. Permission Denied on Scripts**
+```bash
+# Make scripts executable (Mac/Linux)
+chmod +x server/scripts/*.js
 ```
 
 ---

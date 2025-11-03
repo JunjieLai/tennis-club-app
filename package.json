@@ -8,7 +8,10 @@
     "client": "cd client && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "build": "cd client && npm run build",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "setup-db": "node server/scripts/setup-database.js",
+    "seed": "node server/scripts/generate-sample-data.js",
+    "init": "node server/scripts/init-all.js"
   },
   "keywords": ["tennis", "club", "management", "react", "express"],
   "author": "Your Team",
