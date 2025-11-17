@@ -175,8 +175,30 @@ router.post('/', async (req, res) => {
       }
     }
 
-    // Graded matches (120)
-    for (let i = 0; i < 120; i++) {
+    // Finished matches awaiting grading (15)
+    for (let i = 0; i < 15; i++) {
+      const player1 = users[randomInt(0, users.length - 1)];
+      const player2 = getOpponent(player1, users);
+      if (!player2) continue;
+
+      const matchDate = randomDate(new Date(now.getTime() - 5 * 86400000), new Date(now.getTime() - 1 * 86400000));
+      const challenge = await createUniqueChallenge(player1, player2, 'Accept', matchDate, 'Match finished!');
+
+      if (challenge) {
+        await Match.create({
+          CID: challenge.CID, DateOfMatch: matchDate, Status: 'finished',
+          Player1MEID: player1.MEID, Player2MEID: player2.MEID,
+          MEID1Set1Score: null, MEID2Set1Score: null,
+          MEID1Set2Score: null, MEID2Set2Score: null,
+          MEID1Set3Score: null, MEID2Set3Score: null,
+          WinnerMEID: null, LoserMEID: null
+        });
+        matchCount++;
+      }
+    }
+
+    // Graded matches (105)
+    for (let i = 0; i < 105; i++) {
       const player1 = users[randomInt(0, users.length - 1)];
       const player2 = getOpponent(player1, users);
       if (!player2) continue;
