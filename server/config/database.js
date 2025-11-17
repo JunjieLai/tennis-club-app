@@ -1,20 +1,29 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
+// PostgreSQL configuration (migrated from MySQL)
+// Changed: dialect from 'mysql' to 'postgres', port from 3306 to 5432
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'tennisclub',
-  process.env.DB_USER || 'root',
+  process.env.DB_USER || 'postgres',
   process.env.DB_PASSWORD || '',
   {
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
-    dialect: 'mysql',
+    port: process.env.DB_PORT || 5432,
+    dialect: 'postgres', // Changed from 'mysql'
     logging: false,
     pool: {
       max: 5,
       min: 0,
       acquire: 30000,
       idle: 10000
+    },
+    dialectOptions: {
+      // Optional: SSL for production (Supabase requires SSL)
+      ssl: process.env.NODE_ENV === 'production' ? {
+        require: true,
+        rejectUnauthorized: false
+      } : false
     }
   }
 );
