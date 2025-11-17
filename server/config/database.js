@@ -24,10 +24,7 @@ const sequelize = new Sequelize(
         require: true,
         rejectUnauthorized: false
       } : false
-    },
-    // Force IPv4 to avoid IPv6 connection issues on Render
-    native: false,
-    databaseVersion: '13.0'
+    }
   }
 );
 
