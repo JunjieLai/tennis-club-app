@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -14,9 +14,11 @@ const Login = () => {
   const { login, isAuthenticated, isAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  if (isAuthenticated) {
-    navigate(isAdmin ? '/admin' : '/dashboard');
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(isAdmin ? '/admin' : '/dashboard');
+    }
+  }, [isAuthenticated, isAdmin, navigate]);
 
   const handleChange = (e) => {
     setFormData({
