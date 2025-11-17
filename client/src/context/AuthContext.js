@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../services/api';
 
 export const AuthContext = createContext();
 
@@ -18,12 +18,7 @@ export const AuthProvider = ({ children }) => {
 
   const loadUser = async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-      const res = await axios.get('/api/auth/me', config);
+      const res = await API.get('/auth/me');
       setUser(res.data.member);
     } catch (error) {
       console.error('Error loading user:', error);
@@ -34,7 +29,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const res = await axios.post('/api/auth/login', { email, password });
+    const res = await API.post('/auth/login', { email, password });
     localStorage.setItem('token', res.data.token);
     setToken(res.data.token);
     setUser(res.data.member);
@@ -42,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (userData) => {
-    const res = await axios.post('/api/auth/register', userData);
+    const res = await API.post('/auth/register', userData);
     localStorage.setItem('token', res.data.token);
     setToken(res.data.token);
     setUser(res.data.member);
@@ -56,12 +51,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateProfile = async (profileData) => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    };
-    const res = await axios.put('/api/auth/updateprofile', profileData, config);
+    const res = await API.put('/auth/updateprofile', profileData);
     setUser(res.data.member);
     return res.data;
   };
