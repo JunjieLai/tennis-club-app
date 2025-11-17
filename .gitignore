@@ -2,8 +2,12 @@
 node_modules/
 client/node_modules/
 
-# Environment variables
+# Environment variables (IMPORTANT: Never commit these!)
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Production build
 client/build/
@@ -28,8 +32,10 @@ yarn-error.log*
 # Testing
 coverage/
 
-# Misc
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Database backups (optional)
+*.sql
+*.dump
+*.backup
+
+# MySQL backup (no longer needed after PostgreSQL migration)
+server/config/database.js.mysql.backup
