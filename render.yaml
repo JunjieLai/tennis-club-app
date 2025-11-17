@@ -1,0 +1,52 @@
+# Render Blueprint Configuration
+# This file enables easy deployment to Render
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  # Backend API Service
+  - type: web
+    name: tennis-club-backend
+    env: node
+    region: oregon  # Free tier region
+    plan: free
+    buildCommand: npm install
+    startCommand: node server/index.js
+    healthCheckPath: /api/members
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+      - key: DB_HOST
+        sync: false  # Set manually in Render dashboard
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        value: postgres
+      - key: DB_USER
+        value: postgres
+      - key: DB_PASSWORD
+        sync: false  # Set manually in Render dashboard (Supabase password)
+      - key: JWT_SECRET
+        generateValue: true  # Auto-generate secure secret
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: CLIENT_URL
+        sync: false  # Set manually after frontend is deployed
+
+  # Frontend Static Site
+  - type: web
+    name: tennis-club-frontend
+    env: static
+    region: oregon  # Free tier region
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: client/build
+    envVars:
+      - key: REACT_APP_API_URL
+        sync: false  # Set manually after backend is deployed
+
+# Note: You'll need to manually set these values in Render dashboard:
+# 1. DB_HOST: Your Supabase database host (e.g., db.xxx.supabase.co)
+# 2. DB_PASSWORD: Your Supabase database password
+# 3. CLIENT_URL: Your frontend URL (after frontend is deployed)
+# 4. REACT_APP_API_URL: Your backend URL (after backend is deployed)
