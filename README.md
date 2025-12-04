@@ -47,10 +47,10 @@ PingCourt digitizes and automates club operations through:
 
 ### Key Innovations
 
-✨ **Intelligent Scheduling** - Prevents double-booking while maintaining flexibility across dates
-📊 **Daily Win Rate Tracking** - Groups matches by day for accurate performance metrics
-🔐 **Role-Based Access** - Optimized workflows for players vs. administrators
-🚀 **RESTful API** - Clean architecture enabling future mobile integration
+- ✨ **Intelligent Scheduling** - Prevents double-booking while maintaining flexibility across dates
+- 📊 **Daily Win Rate Tracking** - Groups matches by day for accurate performance metrics
+- 🔐 **Role-Based Access** - Optimized workflows for players vs. administrators
+- 🚀 **RESTful API** - Clean architecture enabling future mobile integration
 
 ---
 
@@ -148,26 +148,6 @@ UTR: 7.8 | 20 matches in last quarter
 ```
 
 **Note:** The application runs on Render's free tier, which may have a cold start delay (~30 seconds) on first load.
-
----
-
-## 📸 Screenshots
-
-### Player Dashboard
-![Dashboard](https://via.placeholder.com/800x400/667eea/ffffff?text=Player+Dashboard)
-*View performance statistics, recent matches, and win rate trends*
-
-### Challenge System
-![Challenge](https://via.placeholder.com/800x400/764ba2/ffffff?text=Challenge+System)
-*Send and manage challenges with UTR-based recommendations*
-
-### Match Calendar
-![Calendar](https://via.placeholder.com/800x400/667eea/ffffff?text=Match+Calendar)
-*Visual calendar showing upcoming and historical matches*
-
-### Admin Panel
-![Admin](https://via.placeholder.com/800x400/764ba2/ffffff?text=Admin+Panel)
-*Comprehensive member management and analytics dashboard*
 
 ---
 
@@ -549,26 +529,6 @@ For detailed deployment configuration, see [DEPLOYMENT.md](DEPLOYMENT.md) and [r
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Code Style
-- Follow existing code formatting
-- Write meaningful commit messages
-- Add comments for complex logic
-- Test your changes before submitting
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -578,24 +538,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Team
 
 Developed as a university project for tennis club management.
-
----
-
-## 🙏 Acknowledgments
-
-- [React](https://reactjs.org/) - UI framework
-- [Express](https://expressjs.com/) - Backend framework
-- [Sequelize](https://sequelize.org/) - ORM
-- [Recharts](https://recharts.org/) - Charting library
-- [Render](https://render.com/) - Hosting platform
-- [Supabase](https://supabase.com/) - Database hosting
-- [DiceBear](https://dicebear.com/) - Avatar generation
-
----
-
-## 📞 Support
-
-For questions or support, please open an issue on GitHub or contact the development team.
 
 ---
 
