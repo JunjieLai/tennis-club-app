@@ -540,6 +540,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Team
 
 Developed as a university project for tennis club management.
+
 **Team members:** Junjie Lai, Youdong Lu, Emma Zou, Chen Zhu
 
 ---
