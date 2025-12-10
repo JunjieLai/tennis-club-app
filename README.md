@@ -495,21 +495,6 @@ PingCourt is deployed using modern cloud infrastructure:
 - **Connection:** SSL enabled
 - **Free Tier:** 500MB storage, connection pooling
 
-### Deployment Steps
-
-1. **Push code to GitHub**
-   ```bash
-   git push origin main
-   ```
-
-2. **Render auto-deploys** both frontend and backend
-
-3. **Verify deployment**
-   - Check Render dashboard for build logs
-   - Test application at production URL
-
-For detailed deployment configuration, see [DEPLOYMENT.md](DEPLOYMENT.md) and [render.yaml](render.yaml).
-
 ---
 
 ## 🎨 Design & UX
