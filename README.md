@@ -8,7 +8,7 @@
 [![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791)](https://www.postgresql.org/)
 
 **🌐 Live Application:** [https://tennis-club-frontend.onrender.com](https://tennis-club-frontend.onrender.com)
-
+**📹 Presentation Video:** [CS409 PingCourt Final Video]([https://tennis-club-frontend.onrender.com](https://www.youtube.com/watch?v=Veyr-2DUNzM))
 ---
 
 ## 📖 Table of Contents
@@ -538,7 +538,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Team
 
 Developed as a university project for tennis club management.
-Team members: Junjie Lai, Youdong Lu, Emma Zou, Chen Zhu
+**Team members:** Junjie Lai, Youdong Lu, Emma Zou, Chen Zhu
 
 ---
 
