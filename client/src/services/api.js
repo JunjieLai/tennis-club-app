@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+// API base URL - supports both local development and production deployment
+// In production (Render), REACT_APP_API_URL should be set to backend URL
+const API_BASE_URL = process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}/api`
+  : '/api'; // Local development uses proxy
+
 const API = axios.create({
-  baseURL: '/api'
+  baseURL: API_BASE_URL
 });
 
 // Add token to requests

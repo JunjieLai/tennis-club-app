@@ -28,6 +28,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/members', require('./routes/members'));
 app.use('/api/challenges', require('./routes/challenges'));
 app.use('/api/matches', require('./routes/matches'));
+app.use('/api/seed', require('./routes/seed')); // Seed data endpoint
 
 // Health check
 app.get('/api/health', (req, res) => {
